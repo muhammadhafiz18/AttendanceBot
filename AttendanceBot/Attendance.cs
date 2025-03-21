@@ -7,8 +7,6 @@ namespace AttendanceBot;
 
 public class Attendance(ILogger<Attendance> logger)
 {
-    private readonly ILogger<Attendance> logger = logger;
-
     [Function("Attendance")]
     public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
     {
