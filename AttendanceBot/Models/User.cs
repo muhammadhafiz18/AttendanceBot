@@ -1,4 +1,5 @@
 ﻿namespace AttendanceBot.Models;
+
 public class User
 {
     public long Id { get; set; }  
