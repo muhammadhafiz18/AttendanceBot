@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace AttendanceBot;
+namespace AttendanceBot.Functions;
 
-public class Attendance(ILogger<Attendance> logger)
+public class ReceiveLocationFunction(ILogger<ReceiveLocationFunction> logger)
 {
-    [Function("Attendance")]
+    [Function("ReceiveLocationFunction")]
     public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
     {
         logger.LogInformation("C# HTTP trigger function processed a request.");
