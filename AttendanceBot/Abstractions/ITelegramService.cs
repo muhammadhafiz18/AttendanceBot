@@ -1,6 +1,9 @@
-﻿namespace AttendanceBot.Abstractions;
+﻿using AttendanceBot.Models;
+
+namespace AttendanceBot.Abstractions;
 
 public interface ITelegramService
 {
-    Task SendLocationButtonAsync(long chatId);
+    Task SendStartMessageAsync(long chatId);
+    Task ForwardLocationToAzureAsync(LocationData locationData);
 }
