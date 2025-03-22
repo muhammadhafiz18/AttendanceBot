@@ -10,8 +10,8 @@ namespace AttendanceBot.Functions;
 
 public class WebhookFunction(ILogger<WebhookFunction> logger, ITelegramService telegramService)
 {
-    private const double CENTERLATITUDE = 41.38150994089365;
-    private const double CENTERLONGITUDE = 69.21664774464672;
+    private const double CENTERLATITUDE = 41.351097459364624;
+    private const double CENTERLONGITUDE = 69.3530236571363;
     private const double RADIUSMETERS = 100;
 
     [Function("WebhookFunction")]
