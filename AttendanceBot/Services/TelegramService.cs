@@ -49,4 +49,18 @@ public class TelegramService(HttpClient httpClient, IConfiguration configuration
 
         await httpClient.PostAsync(azureFunctionUrl, content);
     }
+
+    public async Task SendMessageAsync(long chatId, string message)
+    {
+        var payload = new
+        {
+            chat_id = chatId,
+            text = message
+        };
+
+        var json = JsonSerializer.Serialize(payload);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        await httpClient.PostAsync($"https://api.telegram.org/bot{botToken}/sendMessage", content);
+    }
 }
