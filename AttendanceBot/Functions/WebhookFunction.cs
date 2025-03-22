@@ -10,9 +10,9 @@ namespace AttendanceBot.Functions;
 
 public class WebhookFunction(ILogger<WebhookFunction> logger, ITelegramService telegramService)
 {
-    private const double CenterLatitude = 41.38150994089365;
-    private const double CenterLongitude = 69.21664774464672;
-    private const double RadiusMeters = 100; // Allow 100 meters around the center
+    private const double CENTERLATITUDE = 41.38150994089365;
+    private const double CENTERLONGITUDE = 69.21664774464672;
+    private const double RADIUSMETERS = 100;
 
     [Function("WebhookFunction")]
     public async Task<IActionResult> Run(
@@ -46,6 +46,16 @@ public class WebhookFunction(ILogger<WebhookFunction> logger, ITelegramService t
         if (message.Location != null)
         {
             logger.LogInformation("Received location from user {ChatId}.", chatId);
+
+            bool isReplyToWelcome = message.ReplyToMessage?.Text == "Welcome! Press the button below to share your location.";
+
+            if (!isReplyToWelcome)
+            {
+                await telegramService.SendMessageAsync(chatId, 
+                    "Iltimos, lokatsiyani yuborish uchun \"📍 I am here\" tugmasidan foydalaning.");
+                return new OkObjectResult("Invalid location type processed.");
+            }
+
             var locationData = new LocationData
             {
                 UserId = message.From.Id,
@@ -57,8 +67,7 @@ public class WebhookFunction(ILogger<WebhookFunction> logger, ITelegramService t
                 Timestamp = DateTime.UtcNow
             };
 
-            // Check if the student is near the target location
-            bool isNear = IsWithinRadius(locationData.Latitude, locationData.Longitude, CenterLatitude, CenterLongitude, RadiusMeters);
+            bool isNear = IsWithinRadius(locationData.Latitude, locationData.Longitude, CENTERLATITUDE, CENTERLONGITUDE, RADIUSMETERS);
 
             string studentName = !string.IsNullOrEmpty(locationData.Username) ? $"@{locationData.Username}" 
                               : !string.IsNullOrEmpty(locationData.FirstName) ? locationData.FirstName 
@@ -73,7 +82,6 @@ public class WebhookFunction(ILogger<WebhookFunction> logger, ITelegramService t
             return new OkObjectResult("Location processed.");
         }
 
-        // Log both type and full content of unsupported message
         logger.LogInformation(
             "Received unsupported message from user {ChatId}. Type: {MessageType}. Full content: {Content}", 
             chatId,
@@ -89,7 +97,7 @@ public class WebhookFunction(ILogger<WebhookFunction> logger, ITelegramService t
     /// </summary>
     private static bool IsWithinRadius(double lat1, double lon1, double lat2, double lon2, double radiusMeters)
     {
-        const double EarthRadiusMeters = 6371000; // Earth radius in meters
+        const double EarthRadiusMeters = 6371000;
 
         double dLat = ToRadians(lat2 - lat1);
         double dLon = ToRadians(lon2 - lon1);
